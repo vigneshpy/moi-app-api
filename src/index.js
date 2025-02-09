@@ -4,7 +4,9 @@ import connectDB from "./connection/db.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import acountRoutes from "./routes/accountRoutes.js";
-
+import authRoutes from "./routes/authRoutes.js";
+import dotenv from "dotenv";
+dotenv.config({ path: "../.env" });
 const app = express();
 const port = 3000;
 
@@ -26,3 +28,4 @@ app.listen(port, () => {
 app.use("/events", eventRoutes);
 app.use("/users", userRoutes);
 app.use("/account", acountRoutes);
+app.use("/auth", authRoutes);

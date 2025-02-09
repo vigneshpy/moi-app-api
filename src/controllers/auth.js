@@ -10,13 +10,11 @@ export const register = async (req, res) => {
 		return res.status(400).send("Email and password are required");
 	}
 
-	// Check if the user already exists
 	const existingUser = await User.findOne({ email });
 	if (existingUser) {
 		return res.status(400).send("User already exists");
 	}
 
-	// Hash password
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	try {
@@ -45,20 +43,17 @@ export const login = async (req, res) => {
 		return res.status(400).send("Email and password are required");
 	}
 
-	// Find user by email
 	const user = await User.findOne({ email });
 	if (!user) {
 		return res.status(404).send("User not found");
 	}
 
-	// Check password
 	const isPasswordValid = await bcrypt.compare(password, user.password);
 	if (!isPasswordValid) {
 		return res.status(401).send("Invalid credentials");
 	}
 
-	// Generate JWT
-	const token = jwt.sign({ userId: user._id }, "your_jwt_secret", {
+	const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
 		expiresIn: "1h",
 	});
 	return res.status(200).send({ message: "Login successful", token });

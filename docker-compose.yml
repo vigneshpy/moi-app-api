@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:22
+    container_name: moi-app-api
+    working_dir: /src
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/src
+      - /src/node_modules
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+    command: ["sh", "-c", "npm install && node src/index.js"]
