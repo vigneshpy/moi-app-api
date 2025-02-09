@@ -1,8 +1,16 @@
-const express = require("express");
+import express from "express";
+
+import connectDB from "./connection/db.js";
+import eventRoutes from "./routes/eventRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import acountRoutes from "./routes/accountRoutes.js";
+
 const app = express();
 const port = 3000;
 
-// respond with "hello world" when a GET request is made to the homepage
+connectDB();
+app.use(express.json());
+
 app.get("/", (req, res) => {
 	res.send("MOI APP API");
 });
@@ -14,3 +22,7 @@ app.get("/healthz", (req, res) => {
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
+
+app.use("/events", eventRoutes);
+app.use("/users", userRoutes);
+app.use("/account", acountRoutes);
