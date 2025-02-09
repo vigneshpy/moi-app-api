@@ -1,13 +1,13 @@
 import express from "express";
-import User from "../models/userModel.js";
+import Transaction from "../models/transactionModel.js";
 
 const router = express.Router();
 
 router.post("/add", async (req, res) => {
 	try {
-		const newUser = new User(req.body);
-		const saveUser = await newUser.save();
-		res.status(201).json(saveUser);
+		const transaction = new Transaction(req.body);
+		const saveTransaction = await transaction.save();
+		res.status(201).json(saveTransaction);
 	} catch (err) {
 		res.status(400).json({ error: err.message });
 	}
