@@ -18,7 +18,6 @@ Replace the following placeholders with actual values:
 - `<your_mongo_db_password>`: The MongoDB password.
 - `<your_mongo_db_name>`: The name of your MongoDB database.
 - `<your_jwt_secret>`: The jwt secrete  you can Generate from  https://jwtsecret.com/generate
-- 
 
 ### Step 2: Create MongoDB Cluster and Add Credentials
 
