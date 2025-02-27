@@ -25,7 +25,7 @@ app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
 
-app.use("/events", eventRoutes);
+app.use("/events", verifyToken, eventRoutes);
 app.use("/users", userRoutes);
-app.use("/account", acountRoutes);
+app.use("/accounts", acountRoutes);
 app.use("/auth", authRoutes);
