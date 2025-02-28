@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import acountRoutes from "./routes/accountRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
+import { verifyToken } from "./middleware/auth.middleware.js";
 dotenv.config({ path: "../.env" });
 const app = express();
 const port = 3000;
@@ -26,6 +27,6 @@ app.listen(port, () => {
 });
 
 app.use("/events", verifyToken, eventRoutes);
-app.use("/users", userRoutes);
-app.use("/accounts", acountRoutes);
+app.use("/users", verifyToken, userRoutes);
+app.use("/accounts", verifyToken, acountRoutes);
 app.use("/auth", authRoutes);

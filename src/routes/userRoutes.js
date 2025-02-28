@@ -13,9 +13,41 @@ router.post("/add", async (req, res) => {
 	}
 });
 
+//get all the users needs to be removed or add pagination
+router.get("/all", async (req, res) => {
+	try {
+		const users = await User.find({}, "id first_name last_name email");
+		res.status(200).json(users);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+});
+
+//get user by id
+router.get("/:userId", async (req, res) => {
+	try {
+		const userID = req.params?.userId;
+		const user = await User.findById(userID);
+		res.status(200).json(user);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+});
+
+//get user by email
+router.get("/email/:email", async (req, res) => {
+	try {
+		const email = req.params?.email;
+		const user = await User.findOne({ email }, "id first_name last_name email");
+		res.status(200).json(user);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+});
+
 router.get("/", async (req, res) => {
 	try {
-		res.send("Add user");
+		res.send("");
 	} catch (err) {
 		res.status(400).json({ error: err.message });
 	}
