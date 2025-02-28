@@ -2,6 +2,7 @@ import express from "express";
 
 import connectDB from "./connection/db.js";
 import eventRoutes from "./routes/eventRoutes.js";
+import giftRoutes from "./routes/giftRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import acountRoutes from "./routes/accountRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -27,6 +28,7 @@ app.listen(port, () => {
 });
 
 app.use("/events", verifyToken, eventRoutes);
+app.use("/gifts", verifyToken, giftRoutes);
 app.use("/users", verifyToken, userRoutes);
 app.use("/accounts", verifyToken, acountRoutes);
 app.use("/auth", authRoutes);

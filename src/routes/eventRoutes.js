@@ -3,7 +3,8 @@ import Event from "../models/eventModel.js";
 
 const router = express.Router();
 
-router.post("/add", async (req, res) => {
+//create event
+router.post("/create", async (req, res) => {
 	try {
 		const newEvent = new Event(req.body);
 		const saveEvent = await newEvent.save();
@@ -13,9 +14,23 @@ router.post("/add", async (req, res) => {
 	}
 });
 
+//List all the events created by the user
+router.get("/user/:userId", async (req, res) => {
+	try {
+		const currentUserId = req.params?.userId;
+		const event = await Event.find(
+			{ user_id: currentUserId },
+			"event_name location event_date"
+		);
+		res.status(201).json(event);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
+	}
+});
+
 router.get("/", async (req, res) => {
 	try {
-		res.send("Add events");
+		res.status(400).json("invalid");
 	} catch (err) {
 		res.status(400).json({ error: err.message });
 	}
