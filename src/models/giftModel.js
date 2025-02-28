@@ -13,8 +13,16 @@ const giftSchema = new mongoose.Schema(
 			required: true,
 		},
 		recipient_name: { type: String, required: true },
+		partner_name: { type: String },
+		location: { type: String, required: true },
+		description: { type: String, required: true },
 		amount: { type: Number, required: true },
-		payment_method: { type: String, enum: ["UPI", "Cash"], required: true },
+		payment_method: {
+			type: String,
+			enum: ["UPI", "Cash"],
+			required: true,
+			default: "Cash",
+		},
 		payment_status: {
 			type: String,
 			enum: ["pending", "completed", "failed"],
@@ -24,7 +32,7 @@ const giftSchema = new mongoose.Schema(
 		created_at: { type: Date, default: Date.now },
 		updated_at: { type: Date, default: Date.now },
 	},
-	{ timestamps: true } // Automatically adds created_at and updated_at fields
+	{ timestamps: true } // Automatically manages createdAt and updatedAt
 );
 
 const Gift = mongoose.model("Gift", giftSchema);

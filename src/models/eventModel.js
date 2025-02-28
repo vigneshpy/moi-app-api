@@ -5,7 +5,7 @@ const eventSchema = new mongoose.Schema(
 		event_name: { type: String, required: true },
 		event_date: { type: Date, required: true },
 		location: { type: String, required: true },
-		creator_user_id: {
+		user_id: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
