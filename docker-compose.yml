@@ -1,5 +1,4 @@
-
-
+version: '3.8'
 services:
   app:
     image: node:22
@@ -14,4 +13,4 @@ services:
       - .env
     environment:
       - PORT=3000
-    command: ["sh", "-c", "npm install && node src/index.js"]
+    command: ["sh", "-c", "npm install && npx nodemon src/index.js"]

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-dotenv.config({ path: "../.env" });
+dotenv.config();
 
 const dbUsername = encodeURIComponent(process.env.DATABASE_USER_NAME);
 
