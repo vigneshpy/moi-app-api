@@ -13,4 +13,4 @@ services:
       - .env
     environment:
       - PORT=3000
-    command: ["sh", "-c", "npm install && npx nodemon src/index.js"]
+    command: ["sh", "-c", "npm install -omit=dev && npx node src/index.js"]

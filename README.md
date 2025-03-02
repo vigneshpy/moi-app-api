@@ -54,7 +54,7 @@ const dbPassword = encodeURIComponent(process.env.DATABASE_PASSWORD);
 const dbName = encodeURIComponent(process.env.DATABASE_NAME);
 
 // The connection string using the credentials
-const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@${dbName}.mongodb.net/?retryWrites=true&w=majority`;
 ```
 
 ### Step 3: Install Dependencies
