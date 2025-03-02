@@ -44,7 +44,7 @@ Replace the following placeholders with actual values:
 5. **Get the Connection String:**
    - Go to the "Clusters" section.
    - Click on "Connect" and then "Connect your application."
-   - Copy the connection string provided and replace `<your_mongo_db_username>`, `<your_mongo_db_password>`, and `<your_mongo_db_name>` in the `.env` file accordingly.
+   - Copy the connection string provided and replace `<your_mongo_db_username>`, `<your_mongo_db_password>` and `<your_mongo_db_name>` in the `.env` file accordingly.
 
 Your `.env` file should now have the credentials for your MongoDB Atlas cluster.
 
@@ -54,7 +54,7 @@ const dbPassword = encodeURIComponent(process.env.DATABASE_PASSWORD);
 const dbName = encodeURIComponent(process.env.DATABASE_NAME);
 
 // The connection string using the credentials
-const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@${dbName}.mongodb.net/?retryWrites=true&w=majority`;
 ```
 
 ### Step 3: Install Dependencies

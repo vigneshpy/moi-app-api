@@ -8,7 +8,9 @@ const dbNAme = encodeURIComponent(process.env.DATABASE_NAME);
 
 const dbPassword = encodeURIComponent(process.env.DATABASE_PASSWORD);
 
-const dbURI = `mongodb+srv://${dbUsername}:${dbPassword}@${dbNAme}.njhcz.mongodb.net/?retryWrites=true&w=majority&appName=moi-app`;
+const bdClusterID = encodeURIComponent(process.env.DATABASE_CLUSTER_ID);
+
+const dbURI = `mongodb+srv://${dbUsername}:${dbPassword}@${dbNAme}.mongodb.net/?retryWrites=true&w=majority&appName=moi-app`;
 
 const clientOptions = {
 	serverApi: { version: "1", strict: true, deprecationErrors: true },
