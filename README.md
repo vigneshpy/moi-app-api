@@ -44,7 +44,7 @@ Replace the following placeholders with actual values:
 5. **Get the Connection String:**
    - Go to the "Clusters" section.
    - Click on "Connect" and then "Connect your application."
-   - Copy the connection string provided and replace `<your_mongo_db_username>`, `<your_mongo_db_password>`, `<your_mongo_db_name>` and `<your_mongodb_cluster_id>` in the `.env` file accordingly.
+   - Copy the connection string provided and replace `<your_mongo_db_username>`, `<your_mongo_db_password>` and `<your_mongo_db_name>` in the `.env` file accordingly.
 
 Your `.env` file should now have the credentials for your MongoDB Atlas cluster.
 
