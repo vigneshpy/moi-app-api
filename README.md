@@ -170,7 +170,7 @@ If you prefer to run the app locally without Docker, you can run:
 1. **Start the Server:**
 
    ```bash
-   npm start
+   npm run dev
    ```
 
 2. **Access the Application:**

@@ -35,26 +35,70 @@ export const register = async (req, res) => {
 	}
 };
 
-// Login function
+// // Login function
+// export const login = async (req, res) => {
+// 	const { email, password } = req.body;
+
+// 	if (!email || !password) {
+// 		return res.status(400).send("Email and password are required");
+// 	}
+
+// 	const user = await User.findOne({ email });
+// 	if (!user) {
+// 		return res.status(404).send("User not found");
+// 	}
+
+// 	const isPasswordValid = await bcrypt.compare(password, user.password);
+// 	if (!isPasswordValid) {
+// 		return res.status(401).send("Invalid credentials");
+// 	}
+
+// 	const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+// 		expiresIn: "24h",
+// 	});
+// 	return res.status(200).send({ message: "Login successful", token });
+// };
+
 export const login = async (req, res) => {
-	const { email, password } = req.body;
+	try{
+		const {email, password} = req.body;
 
-	if (!email || !password) {
-		return res.status(400).send("Email and password are required");
+		const user = await User.findOne({email});
+
+		if(!user){
+			return res.status(400).send("User not found");
+		}
+
+		const isMatch = await bcrypt.compare(password, user.password);
+		if(!isMatch) return res.status(400).send("Invalid credentials");
+
+		const token = jwt.sign({userID: user._id}, process.env.JWT_SECRET, {
+			expiresIn: "24h",
+		});
+
+		res.cookie("token", token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV,
+			sameSite: "Strict",
+			maxAge: 24 * 60 * 60 * 1000,
+		});
+
+		res.status(200).send("Login successful");
+	}catch(error){
+		res.status(500).send("error logging in");
 	}
+}
 
-	const user = await User.findOne({ email });
-	if (!user) {
-		return res.status(404).send("User not found");
+export const logout = async(req, res)=>{
+	try{
+		res.clearCookie("token", {
+			httpOnly: true,
+			sameSite: "Strict",
+			secure: process.env.NODE_ENV,
+		});
+
+		res.status(200).send("logout successful");
+	}catch(error){
+		res.status(500).send("Error logging out");
 	}
-
-	const isPasswordValid = await bcrypt.compare(password, user.password);
-	if (!isPasswordValid) {
-		return res.status(401).send("Invalid credentials");
-	}
-
-	const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-		expiresIn: "24h",
-	});
-	return res.status(200).send({ message: "Login successful", token });
-};
+}

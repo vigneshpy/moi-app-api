@@ -1,5 +1,6 @@
 import express from "express";
 
+
 import connectDB from "./connection/db.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import giftRoutes from "./routes/giftRoutes.js";
@@ -8,12 +9,14 @@ import acountRoutes from "./routes/accountRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
 import { verifyToken } from "./middleware/auth.middleware.js";
+import cookieParser from "cookie-parser";
 dotenv.config({ path: "../.env" });
 const app = express();
 const port = 3000;
 
 connectDB();
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
 	res.send("MOI APP API");
