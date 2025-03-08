@@ -9,7 +9,7 @@ router.post("/create", async (req, res) => {
 		const newEvent = new Event(req.body);
 		const saveEvent = await newEvent.save();
 		res.status(201).json(saveEvent);
-	} catch (err) {
+	} catch (err: any) {
 		res.status(400).json({ error: err.message });
 	}
 });
@@ -23,7 +23,7 @@ router.get("/user/:userId", async (req, res) => {
 			"event_name location event_date"
 		);
 		res.status(201).json(event);
-	} catch (err) {
+	} catch (err: any) {
 		res.status(400).json({ error: err.message });
 	}
 });
@@ -31,7 +31,7 @@ router.get("/user/:userId", async (req, res) => {
 router.get("/", async (req, res) => {
 	try {
 		res.status(400).json("invalid");
-	} catch (err) {
+	} catch (err: any) {
 		res.status(400).json({ error: err.message });
 	}
 });
