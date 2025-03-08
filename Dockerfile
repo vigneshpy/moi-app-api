@@ -1,19 +1,30 @@
-# Use the official Node.js image as base
-FROM node:22
-# Set the working directory in the container
+# Stage 1: Build Stage
+FROM node:22 AS build
+
 WORKDIR /src
 
-# Copy package.json and package-lock.json
+# Copy package.json and install dependencies (including devDependencies)
 COPY package*.json ./
-
-# Install dependencies
-RUN npm install --omit=dev
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on
+# Compile TypeScript to JavaScript
+RUN npm run build
+
+# Stage 2: Production Stage (Slimmer Image)
+FROM node:22 AS prod
+
+WORKDIR /src
+
+# Copy only necessary files from build stage
+COPY --from=build /src/dist dist
+COPY --from=build /src/node_modules node_modules
+COPY package.json .
+
+# Expose the port your app runs on
 EXPOSE 3000
 
-# Define the command to run the app
-CMD ["node", "src/index.js"]
+# Start the application
+CMD ["node", "dist/index.js"]

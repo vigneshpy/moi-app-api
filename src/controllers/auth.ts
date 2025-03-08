@@ -1,9 +1,11 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
+import { Request, Response } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET, NODE_ENV } from "../connection/constants.js";
 
 // Register function
-export const register = async (req, res) => {
+export const register: any = async (req: Request, res: Response) => {
 	const { first_name, last_name, email, password, phone_number } = req.body;
 
 	if (!email || !password) {
@@ -35,62 +37,38 @@ export const register = async (req, res) => {
 	}
 };
 
-// // Login function
-// export const login = async (req, res) => {
-// 	const { email, password } = req.body;
+export const login = async (req: any, res: any) => {
+	try {
+		const { email, password } = req.body;
 
-// 	if (!email || !password) {
-// 		return res.status(400).send("Email and password are required");
-// 	}
+		const user = await User.findOne({ email });
 
-// 	const user = await User.findOne({ email });
-// 	if (!user) {
-// 		return res.status(404).send("User not found");
-// 	}
-
-// 	const isPasswordValid = await bcrypt.compare(password, user.password);
-// 	if (!isPasswordValid) {
-// 		return res.status(401).send("Invalid credentials");
-// 	}
-
-// 	const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-// 		expiresIn: "24h",
-// 	});
-// 	return res.status(200).send({ message: "Login successful", token });
-// };
-
-export const login = async (req, res) => {
-	try{
-		const {email, password} = req.body;
-
-		const user = await User.findOne({email});
-
-		if(!user){
+		if (!user) {
 			return res.status(400).send("User not found");
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
-		if(!isMatch) return res.status(400).send("Invalid credentials");
+		if (!isMatch) return res.status(400).send("Invalid credentials");
 
-		const token = jwt.sign({userID: user._id}, process.env.JWT_SECRET, {
+		const token = jwt.sign({ userID: user._id }, JWT_SECRET, {
 			expiresIn: "24h",
 		});
 
 		res.cookie("token", token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV,
+			secure: NODE_ENV,
 			sameSite: "Strict",
 			maxAge: 24 * 60 * 60 * 1000,
 		});
 
 		res.status(200).send("Login successful");
-	}catch(error){
+	} catch (error) {
 		res.status(500).send("error logging in");
 	}
-}
+};
 
-export const logout = async(req, res)=>{
-	try{
+export const logout = async (_: Request, res: any) => {
+	try {
 		res.clearCookie("token", {
 			httpOnly: true,
 			sameSite: "Strict",
@@ -98,7 +76,7 @@ export const logout = async(req, res)=>{
 		});
 
 		res.status(200).send("logout successful");
-	}catch(error){
+	} catch (error) {
 		res.status(500).send("Error logging out");
 	}
-}
+};

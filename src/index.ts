@@ -1,21 +1,20 @@
 import express from "express";
 
-
-import connectDB from "./connection/db.js";
-import eventRoutes from "./routes/eventRoutes.js";
-import giftRoutes from "./routes/giftRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import acountRoutes from "./routes/accountRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
+import connectDB from "./connection/db";
+import eventRoutes from "./routes/eventRoutes";
+import giftRoutes from "./routes/giftRoutes";
+import userRoutes from "./routes/userRoutes";
+import acountRoutes from "./routes/accountRoutes";
+import authRoutes from "./routes/authRoutes";
 import dotenv from "dotenv";
-import { verifyToken } from "./middleware/auth.middleware.js";
 import cookieParser from "cookie-parser";
+import { verifyToken } from "./middleware/auth.middleware";
 dotenv.config({ path: "../.env" });
 const app = express();
 const port = 3000;
 
 connectDB();
-app.use(express.json());
+app.use(express());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
