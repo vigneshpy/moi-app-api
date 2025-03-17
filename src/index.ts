@@ -9,7 +9,7 @@ import authRoutes from "./routes/authRoutes";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { verifyToken } from "./middleware/auth.middleware";
-dotenv.config({ path: "../.env" });
+dotenv.config();
 const app = express();
 const port = 3000;
 
