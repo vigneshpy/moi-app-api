@@ -38,8 +38,10 @@ export const register: any = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: any, res: any) => {
+	console.log("req: ", req.body);
 	try {
 		const { email, password } = req.body;
+		console.log("req.body: ", req.body);
 
 		const user = await User.findOne({ email });
 
