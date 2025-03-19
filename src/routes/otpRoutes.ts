@@ -22,8 +22,10 @@ router.post("/send", validateSendOTP, async (req, res) => {
 		});
 		await saveOTP.save();
 
-		await sendOTP(phone_number, otp);
-
+		const otpSent = await sendOTP(phone_number, otp);
+		if (!otpSent) {
+			return res.status(500).json({ error: "Failed to send OTP. Please try again." });
+		}
 		res.status(201).json({ message: "OTP sent successfully" });
 	} catch (err: any) {
 		console.error("Error:", err);
