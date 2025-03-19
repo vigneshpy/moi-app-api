@@ -59,7 +59,18 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 		if (user) {
 			await User.updateOne({ _id: user._id }, { is_verified: true });
 		} else {
-			throw new Error("User not found!");
+			// Option 1: Create a new unverified user
+			const newUser = new User({
+				phone_number,
+				is_verified: true,
+				// other default fields as needed
+			});
+			await newUser.save();
+			
+			// Option 2: Return a more informative error
+			// return res.status(404).json({ 
+			//   error: "User not found. Please register before verifying OTP." 
+			// });
 		}
 
 		res
