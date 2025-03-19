@@ -1,31 +1,28 @@
 import express from "express";
 import OTP from "../models/OTPModel";
+import User from "../models/userModel";
 import { generateOTP, sendOTP } from "../controllers/sendSMS";
-import { COUNTRY_CODE } from "../connection/constants";
+import {
+	validateSendOTP,
+	validateVerifyOTP,
+} from "../middleware/validateRequest.middleware";
 
 const router = express.Router();
 
-router.post("/send", async (req, res) => {
+// Send OTP route with validation middleware
+router.post("/send", validateSendOTP, async (req, res) => {
 	try {
-		if (!req.body || Object.keys(req.body).length === 0) {
-			throw new Error("Request body is missing or empty!");
-		}
-
-		let phoneNumber = req.body.phone_number;
-		if (!phoneNumber) {
-			throw new Error("Phone number is required!");
-		}
-
-		if (!phoneNumber.startsWith("+")) {
-			phoneNumber = COUNTRY_CODE + phoneNumber;
-		}
-
+		const { phone_number } = req.body;
 		const otp = generateOTP();
 
-		const saveOTP = new OTP({ phone_number: phoneNumber, otp });
+		const saveOTP = new OTP({
+			phone_number,
+			otp,
+			expiresAt: new Date(Date.now() + 5 * 60 * 1000), // OTP expires in 5 minutes
+		});
 		await saveOTP.save();
 
-		await sendOTP(phoneNumber, otp);
+		await sendOTP(phone_number, otp);
 
 		res.status(201).json({ message: "OTP sent successfully" });
 	} catch (err: any) {
@@ -34,22 +31,16 @@ router.post("/send", async (req, res) => {
 	}
 });
 
-router.post("/verify", async (req, res) => {
+// Verify OTP route with validation middleware
+router.post("/verify", validateVerifyOTP, async (req, res) => {
 	try {
-		if (!req.body || Object.keys(req.body).length === 0) {
-			throw new Error("Request body is missing or empty!");
-		}
+		const { phone_number, otp: receivedOTP } = req.body;
 
-		const phoneNumber = req.body.phone_number;
-		const receivedOTP = req.body.otp;
-
-		if (!phoneNumber || !receivedOTP) {
-			throw new Error("Phone number and OTP are required!");
-		}
-
-		const storedOTP = await OTP.findOne({ phone_number: phoneNumber }).sort({
+		// Find the latest OTP entry
+		const storedOTP = await OTP.findOne({ phone_number }).sort({
 			createdAt: -1,
 		});
+		const user = await User.findOne({ phone_number });
 
 		if (!storedOTP) {
 			throw new Error("No OTP found for this phone number!");
@@ -65,7 +56,15 @@ router.post("/verify", async (req, res) => {
 
 		await OTP.updateOne({ _id: storedOTP._id }, { verified: true });
 
-		res.status(200).json({ message: "OTP verified successfully!" });
+		if (user) {
+			await User.updateOne({ _id: user._id }, { is_verified: true });
+		} else {
+			throw new Error("User not found!");
+		}
+
+		res
+			.status(200)
+			.json({ message: "OTP verified successfully, user updated!" });
 	} catch (err: any) {
 		console.error("Error:", err);
 		res.status(400).json({ error: err.message });
