@@ -8,6 +8,8 @@ Create a `.env` file in the root of your project directory and add the following
 DATABASE_USER_NAME=<your_mongo_db_username>
 DATABASE_PASSWORD=<your_mongo_db_password>
 DATABASE_NAME=<your_mongo_db_name>
+JWT_SECRET=<your_jwt_secret> 
+ 
 ```
 
 Replace the following placeholders with actual values:
@@ -15,6 +17,7 @@ Replace the following placeholders with actual values:
 - `<your_mongo_db_username>`: The MongoDB username.
 - `<your_mongo_db_password>`: The MongoDB password.
 - `<your_mongo_db_name>`: The name of your MongoDB database.
+- `<your_jwt_secret>`: The jwt secrete  you can Generate from  https://jwtsecret.com/generate
 
 ### Step 2: Create MongoDB Cluster and Add Credentials
 
@@ -41,7 +44,7 @@ Replace the following placeholders with actual values:
 5. **Get the Connection String:**
    - Go to the "Clusters" section.
    - Click on "Connect" and then "Connect your application."
-   - Copy the connection string provided and replace `<your_mongo_db_username>`, `<your_mongo_db_password>`, and `<your_mongo_db_name>` in the `.env` file accordingly.
+   - Copy the connection string provided and replace `<your_mongo_db_username>`, `<your_mongo_db_password>` and `<your_mongo_db_name>` in the `.env` file accordingly.
 
 Your `.env` file should now have the credentials for your MongoDB Atlas cluster.
 
@@ -51,7 +54,7 @@ const dbPassword = encodeURIComponent(process.env.DATABASE_PASSWORD);
 const dbName = encodeURIComponent(process.env.DATABASE_NAME);
 
 // The connection string using the credentials
-const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@${dbName}.mongodb.net/?retryWrites=true&w=majority`;
 ```
 
 ### Step 3: Install Dependencies
@@ -143,38 +146,7 @@ const mongoURI = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.mongodb.net
 
 1. **Ensure `docker-compose.yml` exists** in your project directory. If not, create one to define your services (like MongoDB or the application itself).
 
-   Example `docker-compose.yml` file:
-
-   ```yaml
-   version: "3"
-   services:
-     app:
-       build: .
-       ports:
-         - "3000:3000"
-       environment:
-         - DATABASE_USER_NAME=${DATABASE_USER_NAME}
-         - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-         - DATABASE_NAME=${DATABASE_NAME}
-       volumes:
-         - .:/app
-       networks:
-         - app_network
-     mongo:
-       image: mongo:latest
-       container_name: mongo
-       environment:
-         - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USER_NAME}
-         - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
-       volumes:
-         - mongo-data:/data/db
-       networks:
-         - app_network
-   volumes:
-     mongo-data:
-   networks:
-     app_network:
-   ```
+  
 
 2. **Start Docker Compose:**
 
@@ -198,7 +170,7 @@ If you prefer to run the app locally without Docker, you can run:
 1. **Start the Server:**
 
    ```bash
-   npm start
+   npm run dev
    ```
 
 2. **Access the Application:**

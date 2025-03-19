@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
 	email: { type: String, required: true },
 	password: { type: String, required: true },
 	phone_number: { type: String, match: /^\d{10}$/ },
+	is_verified: { type: Boolean, default: false },
 	created_at: { type: Date, default: Date.now },
 	updated_at: { type: Date, default: Date.now },
 });
