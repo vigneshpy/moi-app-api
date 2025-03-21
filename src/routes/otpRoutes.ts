@@ -40,13 +40,18 @@ router.post("/send", validateSendOTP, async (req: any, res: any) => {
 // Verify OTP route with validation middleware
 router.post("/verify", validateVerifyOTP, async (req, res) => {
 	try {
-		const { phone_number, otp: receivedOTP } = req.body;
+		const {
+			phone_number,
+			otp: receivedOTP,
+			first_name,
+			last_name,
+			email,
+		} = req.body;
 
 		// Find the latest OTP entry
 		const storedOTP = await OTP.findOne({ phone_number }).sort({
 			createdAt: -1,
 		});
-		const user = await User.findOne({ phone_number });
 
 		if (!storedOTP) {
 			throw new Error("No OTP found for this phone number!");
@@ -62,15 +67,37 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 
 		await OTP.updateOne({ _id: storedOTP._id }, { verified: true });
 
+		let user = await User.findOne({ phone_number });
+
 		if (user) {
-			await user.updateOne({ _id: user._id }, { is_verified: true });
+			const updateData: any = { is_verified: true };
+
+			if (first_name) updateData.first_name = first_name;
+			if (last_name) updateData.last_name = last_name;
+			if (email) updateData.email = email;
+
+			await User.updateOne({ _id: user._id }, updateData);
 		} else {
-			const newUser = new User({ phone_number, is_verified: true });
-			await newUser.save();
+			user = new User({
+				phone_number,
+				is_verified: true,
+				first_name: first_name || "",
+				last_name: last_name || "",
+				email: email || "",
+			});
+			await user.save();
 		}
-		const token = jwt.sign({ userId: user._id, phone_number }, JWT_SECRET, {
-			expiresIn: "24h",
-		});
+
+		const token = jwt.sign(
+			{
+				userId: user._id,
+				phone_number,
+			},
+			JWT_SECRET,
+			{
+				expiresIn: "24h",
+			}
+		);
 
 		// Set JWT in HttpOnly Cookie
 		res.cookie("token", token, {
@@ -80,9 +107,15 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 			maxAge: 24 * 60 * 60 * 1000,
 		});
 
-		res
-			.status(200)
-			.json({ message: "OTP verified successfully, user updated!" });
+		res.status(200).json({
+			message: "OTP verified successfully, user updated!",
+			user: {
+				id: user._id,
+				firstName: user?.first_name,
+				lastName: user.last_name,
+				phone: user.phone_number,
+			},
+		});
 	} catch (err: any) {
 		console.error("Error:", err);
 		res.status(400).json({ error: err.message });
