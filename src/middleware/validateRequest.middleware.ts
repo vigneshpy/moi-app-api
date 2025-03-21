@@ -25,8 +25,8 @@ export const validateVerifyOTP = (req, res, next: NextFunction) => {
 	if (!req.body || Object.keys(req.body).length === 0) {
 		return res.status(400).json({ error: "Request body is missing or empty!" });
 	}
-	let { phone_number } = req.body;
-	const { otp } = req.body;
+
+	const { phone_number, otp } = req.body;
 
 	if (!phone_number || !otp) {
 		return res

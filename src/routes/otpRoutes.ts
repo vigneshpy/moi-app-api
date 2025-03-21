@@ -6,11 +6,13 @@ import {
 	validateSendOTP,
 	validateVerifyOTP,
 } from "../middleware/validateRequest.middleware";
+import { JWT_SECRET } from "../connection/constants";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
 // Send OTP route with validation middleware
-router.post("/send", validateSendOTP, async (req, res) => {
+router.post("/send", validateSendOTP, async (req: any, res: any) => {
 	try {
 		const { phone_number } = req.body;
 		const otp = generateOTP();
@@ -24,7 +26,9 @@ router.post("/send", validateSendOTP, async (req, res) => {
 
 		const otpSent = await sendOTP(phone_number, otp);
 		if (!otpSent) {
-			return res.status(500).json({ error: "Failed to send OTP. Please try again." });
+			return res
+				.status(500)
+				.json({ error: "Failed to send OTP. Please try again." });
 		}
 		res.status(201).json({ message: "OTP sent successfully" });
 	} catch (err: any) {
@@ -59,21 +63,22 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 		await OTP.updateOne({ _id: storedOTP._id }, { verified: true });
 
 		if (user) {
-			await User.updateOne({ _id: user._id }, { is_verified: true });
+			await user.updateOne({ _id: user._id }, { is_verified: true });
 		} else {
-			// Option 1: Create a new unverified user
-			const newUser = new User({
-				phone_number,
-				is_verified: true,
-				// other default fields as needed
-			});
+			const newUser = new User({ phone_number, is_verified: true });
 			await newUser.save();
-			
-			// Option 2: Return a more informative error
-			// return res.status(404).json({ 
-			//   error: "User not found. Please register before verifying OTP." 
-			// });
 		}
+		const token = jwt.sign({ userId: user._id, phone_number }, JWT_SECRET, {
+			expiresIn: "24h",
+		});
+
+		// Set JWT in HttpOnly Cookie
+		res.cookie("token", token, {
+			httpOnly: true, // Prevent JavaScript access (XSS protection)
+			secure: process.env.NODE_ENV === "production", // Secure in production
+			sameSite: "strict",
+			maxAge: 24 * 60 * 60 * 1000,
+		});
 
 		res
 			.status(200)

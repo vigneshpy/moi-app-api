@@ -17,10 +17,18 @@ export const sendOTP = async (phoneNumber, otp) => {
 		const params = {
 			Message: `Your OTP is: ${otp}`,
 			PhoneNumber: phoneNumber,
+			MessageAttributes: {
+				"AWS.SNS.SMS.SMSType": {
+					DataType: "String",
+					StringValue: "Transactional", // Ensures OTP delivery
+				},
+			},
 		};
-		await sns.publish(params).promise();
-		console.log("OTP sent via AWS SNS");
-		return true;
+
+		console.log("Sending OTP with params:", params);
+		const response = await sns.publish(params).promise();
+
+		return response;
 	} catch (error) {
 		console.error("Error sending OTP via SNS:", error);
 		return false;
