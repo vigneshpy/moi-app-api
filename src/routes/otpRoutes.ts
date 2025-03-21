@@ -6,6 +6,8 @@ import {
 	validateSendOTP,
 	validateVerifyOTP,
 } from "../middleware/validateRequest.middleware";
+import { JWT_SECRET } from "../connection/constants";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -57,10 +59,22 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 		await OTP.updateOne({ _id: storedOTP._id }, { verified: true });
 
 		if (user) {
-			await User.updateOne({ _id: user._id }, { is_verified: true });
+			await user.updateOne({ _id: user._id }, { is_verified: true });
 		} else {
-			throw new Error("User not found!");
+			const newUser = new User({ phone_number, is_verified: true });
+			await newUser.save();
 		}
+		const token = jwt.sign({ userId: user._id, phone_number }, JWT_SECRET, {
+			expiresIn: "24h",
+		});
+
+		// Set JWT in HttpOnly Cookie
+		res.cookie("token", token, {
+			httpOnly: true, // Prevent JavaScript access (XSS protection)
+			secure: process.env.NODE_ENV === "production", // Secure in production
+			sameSite: "strict",
+			maxAge: 24 * 60 * 60 * 1000,
+		});
 
 		res
 			.status(200)

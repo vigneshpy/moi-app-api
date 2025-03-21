@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { DATA_BASE_URI } from "./constants";
-console.log("DATA_BASE_URI: ", DATA_BASE_URI);
 const clientOptions = {
 	serverApi: { version: "1", strict: true, deprecationErrors: true },
 };
@@ -8,7 +7,6 @@ const connectDB = async function run() {
 	try {
 		//@ts-ignore
 		await mongoose.connect(DATA_BASE_URI, clientOptions);
-		console.log("DATA_BASE_URI: ", DATA_BASE_URI);
 		//@ts-ignore
 		await mongoose.connection.db.admin().command({ ping: 1 });
 		console.log(
