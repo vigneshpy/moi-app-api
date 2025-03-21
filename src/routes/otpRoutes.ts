@@ -12,7 +12,7 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 // Send OTP route with validation middleware
-router.post("/send", validateSendOTP, async (req, res) => {
+router.post("/send", validateSendOTP, async (req: any, res: any) => {
 	try {
 		const { phone_number } = req.body;
 		const otp = generateOTP();
@@ -24,8 +24,12 @@ router.post("/send", validateSendOTP, async (req, res) => {
 		});
 		await saveOTP.save();
 
-		await sendOTP(phone_number, otp);
-
+		const otpSent = await sendOTP(phone_number, otp);
+		if (!otpSent) {
+			return res
+				.status(500)
+				.json({ error: "Failed to send OTP. Please try again." });
+		}
 		res.status(201).json({ message: "OTP sent successfully" });
 	} catch (err: any) {
 		console.error("Error:", err);
