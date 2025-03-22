@@ -6,7 +6,7 @@ import {
 	validateSendOTP,
 	validateVerifyOTP,
 } from "../middleware/validateRequest.middleware";
-import { JWT_SECRET } from "../connection/constants";
+import { JWT_SECRET, NODE_ENV } from "../connection/constants";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -60,8 +60,8 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 		if (storedOTP.expiresAt < new Date()) {
 			throw new Error("OTP has expired!");
 		}
-
-		if (storedOTP.otp !== receivedOTP) {
+		//skip otp verification for dev
+		if (storedOTP.otp !== receivedOTP && NODE_ENV != "development") {
 			throw new Error("Invalid OTP!");
 		}
 

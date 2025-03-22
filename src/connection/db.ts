@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 import { DATA_BASE_URI } from "./constants";
 const clientOptions = {
 	serverApi: { version: "1", strict: true, deprecationErrors: true },
+	tls: true, // Ensure TLS is enabled
 };
+
 const connectDB = async function run() {
 	try {
 		//@ts-ignore
