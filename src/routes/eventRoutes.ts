@@ -7,9 +7,12 @@ const router = express.Router();
 router.post("/create", async (req, res) => {
 	try {
 		const newEvent = new Event(req.body);
+		console.log("newEvent: ", newEvent);
 		const saveEvent = await newEvent.save();
+		console.log("saveEvent: ", saveEvent);
 		res.status(201).json(saveEvent);
 	} catch (err: any) {
+		console.log("err: ", err.message);
 		res.status(400).json({ error: err.message });
 	}
 });
@@ -24,6 +27,8 @@ router.get("/user/:userId", async (req, res) => {
 		);
 		res.status(201).json(event);
 	} catch (err: any) {
+		console.log("err.message: ", err.message);
+
 		res.status(400).json({ error: err.message });
 	}
 });

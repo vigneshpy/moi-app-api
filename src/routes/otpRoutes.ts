@@ -109,12 +109,7 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 
 		res.status(200).json({
 			message: "OTP verified successfully, user updated!",
-			user: {
-				id: user._id,
-				firstName: user?.first_name,
-				lastName: user.last_name,
-				phone: user.phone_number,
-			},
+			user,
 		});
 	} catch (err: any) {
 		console.error("Error:", err);
