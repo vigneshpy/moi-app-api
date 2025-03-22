@@ -45,6 +45,16 @@ router.get("/email/:email", async (req, res) => {
 	}
 });
 
+router.get("/phone/:phone_number", async (req, res) => {
+	try {
+		const phone = req.params?.phone_number;
+		const user = await User.findOne({ phone }, "id first_name last_name email");
+		res.status(200).json(user);
+	} catch (err: any) {
+		res.status(400).json({ error: err.message });
+	}
+});
+
 router.get("/", async (req, res) => {
 	try {
 		res.send("");
