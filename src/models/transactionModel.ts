@@ -6,11 +6,13 @@ const transactionSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
+			immutable: true,
 		},
 		event_id: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Event",
 			required: true,
+			immutable: true,
 		},
 		amount: { type: Number, required: true },
 		payment_method: { type: String, enum: ["UPI", "Cash"], required: true },

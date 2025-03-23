@@ -11,6 +11,7 @@ const giftSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Event",
 			required: true,
+			immutable: true,
 		},
 		recipient_name: { type: String, required: true },
 		partner_name: { type: String },

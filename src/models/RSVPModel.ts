@@ -7,6 +7,7 @@ const rsvpSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Event",
 			required: true,
+			immutable: true,
 		},
 		rsvp_link: { type: String },
 
