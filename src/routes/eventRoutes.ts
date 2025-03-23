@@ -131,7 +131,7 @@ router.put("/:eventId", upload.single("cover_image"), async (req, res) => {
 
 		// Generate pre-signed URL for updated image
 		if (updatedEvent.cover_image?.cover_url) {
-			event.cover_image.presigned_url = await generatePreSignURL(
+			updatedEvent.cover_image.presigned_url = await generatePreSignURL(
 				updatedEvent.cover_image.cover_url
 			);
 		}
