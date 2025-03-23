@@ -25,7 +25,7 @@ export const sendOTP = async (phoneNumber, otp) => {
 			},
 		};
 
-		console.log("Sending OTP with params:", params);
+		console.log("Sending OTP:", otp);
 		const response = await sns.publish(params).promise();
 
 		return response;
