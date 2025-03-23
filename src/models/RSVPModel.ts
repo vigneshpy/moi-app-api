@@ -8,9 +8,8 @@ const rsvpSchema = new mongoose.Schema(
 			ref: "Event",
 			required: true,
 		},
-		rsvp_link: { type: String, required: true },
+		rsvp_link: { type: String },
 
-		// Invitee Contact List with Tracking
 		invitees: [
 			{
 				name: { type: String, required: true },
@@ -25,7 +24,7 @@ const rsvpSchema = new mongoose.Schema(
 					enum: ["sms", "whatsapp"],
 					default: "sms",
 				},
-				message_sid: { type: String }, // Stores Twilio Message SID
+				message_sid: { type: String },
 			},
 		],
 	},
