@@ -14,5 +14,18 @@ const DATABASE_CLUSTER_ID = encodeURIComponent(
 );
 const JWT_SECRET = process.env.JWT_SECRET || "";
 const NODE_ENV = process.env.NODE_ENV || "development";
-export const DATA_BASE_URI = `mongodb+srv://${DATABASE_USER_NAME}:${DATA_BASE_PASSWORD}@${DATABASE_NAME}.${DATABASE_CLUSTER_ID}.mongodb.net/?retryWrites=true&w=majority&appName=moi-app`;
-export { JWT_SECRET, NODE_ENV };
+const DATA_BASE_URI = `mongodb+srv://${DATABASE_USER_NAME}:${DATA_BASE_PASSWORD}@${DATABASE_NAME}.${DATABASE_CLUSTER_ID}.mongodb.net/?retryWrites=true&
+w=majority&appName=moi-app`;
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY || "";
+
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || "";
+const COUNTRY_CODE = "+91";
+
+export {
+	JWT_SECRET,
+	NODE_ENV,
+	DATA_BASE_URI,
+	AWS_ACCESS_KEY,
+	AWS_SECRET_ACCESS_KEY,
+	COUNTRY_CODE,
+};

@@ -12,9 +12,4 @@ services:
     environment:
       - PORT=3000
       - NODE_ENV=production
-    command: ["npm", "run", "start"]
-    volumes:
-      - ./src:/src/src
-      - ./tsconfig.json:/src/tsconfig.json
-      - ./package.json:/src/package.json
-      - ./package-lock.json:/src/package-lock.json
+    command: ["node", "dist/index.js"]

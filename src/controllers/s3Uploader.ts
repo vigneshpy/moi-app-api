@@ -1,0 +1,53 @@
+import {
+	S3Client,
+	PutObjectCommand,
+	GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { v4 as uuidv4 } from "uuid";
+import { AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY } from "../connection/constants";
+
+export const s3 = new S3Client({
+	region: process.env.AWS_REGION,
+	credentials: {
+		accessKeyId: AWS_ACCESS_KEY,
+		secretAccessKey: AWS_SECRET_ACCESS_KEY,
+	},
+});
+
+export const uploadToS3 = async (buffer) => {
+	const key = `covers/${uuidv4()}.png`;
+	const uploadParams: any = {
+		Bucket: process.env.AWS_S3_BUCKET,
+		Key: key,
+		Body: buffer,
+		ContentType: "image/png",
+	};
+
+	await s3.send(new PutObjectCommand(uploadParams));
+	return key; // Return only the key, not the full URL
+};
+
+export const generatePreSignURL = async (key: string): Promise<string> => {
+	try {
+		const command = new GetObjectCommand({
+			Bucket: process.env.AWS_S3_BUCKET,
+			Key: extractS3Key(key),
+		});
+		if (key) {
+			const url = await getSignedUrl(s3, command, { expiresIn: 3600 }); // 1-hour expiry
+			console.log("url: ", url);
+			return url;
+		}
+	} catch (error) {
+		console.error("Error generating pre-signed URL:", error);
+		throw new Error("Could not generate pre-signed URL");
+	}
+};
+
+const extractS3Key = (url: string): string => {
+	const bucketName = process.env.AWS_S3_BUCKET;
+	const prefix = `https://${bucketName}.s3.ap-south-1.amazonaws.com/`;
+
+	return url.replace(prefix, "");
+};
