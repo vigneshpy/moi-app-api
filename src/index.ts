@@ -9,6 +9,8 @@ import userRoutes from "./routes/userRoutes";
 import acountRoutes from "./routes/accountRoutes";
 import authRoutes from "./routes/authRoutes";
 import otpRoutes from "./routes/otpRoutes";
+import rsvpRoutes from "./routes/rsvpRoutes";
+
 import { verifyToken } from "./middleware/auth.middleware";
 dotenv.config();
 const app = express();
@@ -36,4 +38,5 @@ app.use("/gifts", verifyToken, giftRoutes);
 app.use("/users", verifyToken, userRoutes);
 app.use("/accounts", verifyToken, acountRoutes);
 app.use("/auth", authRoutes);
+app.use("/rsvp", rsvpRoutes);
 app.use("/otp", otpRoutes);

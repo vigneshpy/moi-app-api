@@ -1,12 +1,15 @@
-//@ts-nocheck
 import express from "express";
 import Event from "../models/eventModel.js";
 import multer from "multer";
-import { uploadToS3, generatePreSignURL } from "../controllers/s3Uploader.js";
+import {
+	uploadToS3,
+	generatePreSignURL,
+	deleteS3Image,
+} from "../controllers/s3Uploader.js";
+import RSVP from "../models/RSVPModel.js";
 
 const router = express.Router();
 
-// Configure multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -40,6 +43,9 @@ router.post("/create", upload.single("cover_image"), async (req, res) => {
 		});
 
 		const savedEvent = await newEvent.save();
+		const rsvp = await RSVP.findOne({ event_id: savedEvent._id });
+		console.log("rsvp: ", rsvp);
+
 		res.status(201).json({ success: true, event: savedEvent });
 	} catch (error) {
 		console.error("Error creating event:", error);
@@ -99,9 +105,8 @@ router.delete("/:eventId", async (req, res) => {
 	try {
 		const { eventId } = req.params;
 		const event = await Event.findByIdAndDelete(eventId);
-
 		if (!event) return res.status(404).json({ error: "Event not found" });
-
+		if (event.cover_image.cover_url) deleteS3Image(event.cover_image.cover_url);
 		res.status(200).json({ success: true, deletedEventId: event._id });
 	} catch (error) {
 		console.error("Error deleting event:", error);
@@ -116,7 +121,7 @@ router.put("/:eventId", upload.single("cover_image"), async (req, res) => {
 		let updateData = { ...req.body };
 
 		// If a new image is uploaded, upload to S3
-		if (req.file) {
+		if (req?.file) {
 			updateData.cover_image = {
 				cover_url: await uploadToS3(req.file.buffer, req.file.mimetype),
 			};
@@ -131,7 +136,7 @@ router.put("/:eventId", upload.single("cover_image"), async (req, res) => {
 
 		// Generate pre-signed URL for updated image
 		if (updatedEvent.cover_image?.cover_url) {
-			event.cover_image.presigned_url = await generatePreSignURL(
+			updatedEvent.cover_image.presigned_url = await generatePreSignURL(
 				updatedEvent.cover_image.cover_url
 			);
 		}

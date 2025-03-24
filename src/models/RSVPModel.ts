@@ -9,23 +9,21 @@ const rsvpSchema = new mongoose.Schema(
 			required: true,
 			immutable: true,
 		},
-		rsvp_link: { type: String },
+		rsvp_link: { type: String, unique: true },
 
-		invitees: [
+		responses: [
 			{
+				uid: { type: String, unique: true },
 				name: { type: String, required: true },
-				phone: { type: String, required: true },
-				invite_status: {
+				email: { type: String, sparse: true },
+				phone: { type: String, sparse: true },
+				response: {
 					type: String,
-					enum: ["pending", "sent", "delivered", "failed"],
-					default: "pending",
+					enum: ["Yes", "No"],
+					required: true,
 				},
-				delivery_method: {
-					type: String,
-					enum: ["sms", "whatsapp"],
-					default: "sms",
-				},
-				message_sid: { type: String },
+				comment: { type: String, default: "" },
+				created_at: { type: Date, default: Date.now },
 			},
 		],
 	},
@@ -35,7 +33,7 @@ const rsvpSchema = new mongoose.Schema(
 // Auto-generate RSVP link
 rsvpSchema.pre("save", function (next) {
 	if (!this.rsvp_link) {
-		this.rsvp_link = `/rsvp/${uuidv4()}`;
+		this.rsvp_link = `/rsvp/${this.event_id}/${uuidv4()}`;
 	}
 	next();
 });
