@@ -2,6 +2,7 @@ import {
 	S3Client,
 	PutObjectCommand,
 	GetObjectCommand,
+	DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
@@ -50,4 +51,20 @@ const extractS3Key = (url: string): string => {
 	const prefix = `https://${bucketName}.s3.ap-south-1.amazonaws.com/`;
 
 	return url.replace(prefix, "");
+};
+
+export const deleteS3Image = async (s3URL: string) => {
+	const fileKey = extractS3Key(s3URL);
+	const command = new DeleteObjectCommand({
+		Bucket: process.env.AWS_S3_BUCKET,
+		Key: fileKey,
+	});
+
+	try {
+		await s3.send(command);
+		console.log(`File ${fileKey} deleted successfully from S3`);
+	} catch (err) {
+		console.error("Error deleting the file from S3", err);
+		throw new Error("Failed to delete the file from S3");
+	}
 };
