@@ -3,15 +3,15 @@ import RSVP from "../models/RSVPModel";
 const router = express.Router();
 
 //verify RSVP
-router.post("/submit", async (req: express.Request, res: express.Response) => {
+router.post("/submit", async (req: any, res: any) => {
 	try {
 		const { event_id, name, phone, response, comment } = req.body;
-		
+
 		// Validate required fields
 		if (!event_id || !name || !phone || !response) {
 			return res.status(400).json({ message: "Missing required fields" });
 		}
-    
+
 		const rsvp = await RSVP.findOne({ event_id });
 		if (!rsvp) {
 			return res
