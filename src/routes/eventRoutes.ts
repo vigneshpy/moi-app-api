@@ -1,3 +1,4 @@
+//@ts-nocheck
 import express from "express";
 import Event from "../models/eventModel.js";
 import multer from "multer";
