@@ -3,12 +3,15 @@ import RSVP from "../models/RSVPModel";
 const router = express.Router();
 
 //verify RSVP
-router.post("/submit", async (req: any, res: any) => {
+router.post("/submit", async (req: express.Request, res: express.Response) => {
 	try {
 		const { event_id, name, phone, response, comment } = req.body;
-		console.log("Request Method:", req.method);
-		console.log("Content-Type:", req.headers["content-type"]);
-		console.log("Raw Body:", req.body);
+		
+		// Validate required fields
+		if (!event_id || !name || !phone || !response) {
+			return res.status(400).json({ message: "Missing required fields" });
+		}
+    
 		const rsvp = await RSVP.findOne({ event_id });
 		if (!rsvp) {
 			return res
@@ -28,7 +31,8 @@ router.post("/submit", async (req: any, res: any) => {
 
 		res.json({ success: true, message: "RSVP submitted successfully" });
 	} catch (error) {
-		res.status(500).json({ message: "Error", error });
+		console.error("Error submitting RSVP:", error);
+		res.status(500).json({ message: "Failed to submit RSVP" });
 	}
 });
 
