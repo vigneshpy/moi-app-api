@@ -51,7 +51,7 @@ router.get("/:rsvpID", async (req: any, res: any) => {
 
 router.get("/event/:eventID", async (req: any, res: any) => {
 	try {
-		const rsvp = await RSVP.findOne({ event_id: req.params.eventID });
+		const rsvp = await RSVP.findOne({ event_id: req.params.eventID }, "token");
 		if (!rsvp) {
 			return res.status(404).json({ message: "RSVP Not found" });
 		}
