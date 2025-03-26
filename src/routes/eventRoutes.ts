@@ -82,8 +82,12 @@ router.get("/user/:userId", async (req, res) => {
 // Get a specific event by ID
 router.get("/:eventId", async (req, res) => {
 	try {
+		const include_rsvp = Boolean(req.query?.rsvp || false);
+		console.log("include_rsvp: ", include_rsvp);
+
 		const { eventId } = req.params;
-		const event = await Event.findById(eventId);
+
+		const event = await Event.findById(eventId).lean();
 
 		if (!event) return res.status(404).json({ error: "Event not found" });
 
@@ -94,6 +98,12 @@ router.get("/:eventId", async (req, res) => {
 			);
 		}
 
+		if (include_rsvp) {
+			const rsvp = await RSVP.findOne({ event_id: eventId })
+				.sort({ created_at: -1 })
+				.lean();
+			return res.status(200).json({ event, rsvp });
+		}
 		res.status(200).json(event);
 	} catch (error) {
 		console.error("Error fetching event:", error);

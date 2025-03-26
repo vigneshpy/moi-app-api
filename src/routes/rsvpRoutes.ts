@@ -5,7 +5,8 @@ const router = express.Router();
 //verify RSVP
 router.post("/submit", async (req: any, res: any) => {
 	try {
-		const { event_id, name, phone, response, comment } = req.body;
+		const { event_id, name, phone, response, comment, number_of_guest } =
+			req.body;
 
 		// Validate required fields
 		if (!event_id || !name || !phone || !response) {
@@ -26,7 +27,7 @@ router.post("/submit", async (req: any, res: any) => {
 				.status(400)
 				.json({ message: "You have already submitted an RSVP" });
 		}
-		rsvp.responses.push({ name, phone, response, comment });
+		rsvp.responses.push({ name, phone, response, comment, number_of_guest });
 		await rsvp.save();
 
 		res.json({ success: true, message: "RSVP submitted successfully" });
@@ -51,7 +52,7 @@ router.get("/:rsvpID", async (req: any, res: any) => {
 
 router.get("/event/:eventID", async (req: any, res: any) => {
 	try {
-		const rsvp = await RSVP.findOne({ event_id: req.params.eventID });
+		const rsvp = await RSVP.findOne({ event_id: req.params.eventID }, "token");
 		if (!rsvp) {
 			return res.status(404).json({ message: "RSVP Not found" });
 		}

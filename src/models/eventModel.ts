@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import RSVP from "./RSVPModel";
-import { generatePreSignURL } from "../controllers/s3Uploader";
 
 const eventSchema = new mongoose.Schema(
 	{
@@ -46,7 +45,8 @@ eventSchema.pre("save", async function (next) {
 	if (this.generate_rsvp) {
 		const existingRSVP = await RSVP.findOne({ event_id: this._id });
 		if (!existingRSVP) {
-			const newRSVP = new RSVP({ event_id: this._id });
+			const quotes = `You're Invited to our ${this.event_name}`;
+			const newRSVP = new RSVP({ event_id: this._id, rsvp_greetings: quotes });
 			await newRSVP.save();
 		}
 	}

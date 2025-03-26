@@ -10,6 +10,7 @@ import acountRoutes from "./routes/accountRoutes";
 import authRoutes from "./routes/authRoutes";
 import otpRoutes from "./routes/otpRoutes";
 import rsvpRoutes from "./routes/rsvpRoutes";
+import cors from "cors";
 
 import { verifyToken } from "./middleware/auth.middleware";
 dotenv.config();
@@ -40,3 +41,11 @@ app.use("/accounts", verifyToken, acountRoutes);
 app.use("/auth", authRoutes);
 app.use("/rsvp", rsvpRoutes);
 app.use("/otp", otpRoutes);
+app.use(
+	cors({
+		origin: "*",
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		allowedHeaders: ["Content-Type", "Authorization"],
+	})
+);
+app.options("*", cors());
