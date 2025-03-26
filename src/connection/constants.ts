@@ -20,7 +20,7 @@ const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY || "";
 
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || "";
 const COUNTRY_CODE = "+91";
-const RSVP_URL = "http:localhost:3000";
+const RSVP_URL = process.env.RSVP_URL || "http://localhost:3000";
 
 export {
 	JWT_SECRET,

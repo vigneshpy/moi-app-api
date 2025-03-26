@@ -45,7 +45,7 @@ eventSchema.pre("save", async function (next) {
 	if (this.generate_rsvp) {
 		const existingRSVP = await RSVP.findOne({ event_id: this._id });
 		if (!existingRSVP) {
-			const quotes = `You'll Invited to our ${this.event_name}`;
+			const quotes = `You're Invited to our ${this.event_name}`;
 			const newRSVP = new RSVP({ event_id: this._id, rsvp_greetings: quotes });
 			await newRSVP.save();
 		}
