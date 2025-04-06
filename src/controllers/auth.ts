@@ -48,7 +48,7 @@ export const login = async (req: any, res: any) => {
 			return res.status(400).send("User not found");
 		}
 
-		const isMatch = bcrypt.compare(password, bcryptPassword);
+		const isMatch = await bcrypt.compare(password, bcryptPassword);
 		if (!isMatch) return res.status(400).send("Invalid credentials");
 
 		const token = jwt.sign({ userID: user._id }, JWT_SECRET, {
