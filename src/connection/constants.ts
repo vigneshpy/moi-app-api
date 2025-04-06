@@ -16,9 +16,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "";
 const NODE_ENV = process.env.NODE_ENV || "development";
 const DATA_BASE_URI = `mongodb+srv://${DATABASE_USER_NAME}:${DATA_BASE_PASSWORD}@${DATABASE_NAME}.${DATABASE_CLUSTER_ID}.mongodb.net/?retryWrites=true&
 w=majority&appName=moi-app`;
-const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY || "";
+const AWS_ACCESS_KEY = process.env.MY_AWS_ACCESS_KEY || "";
 
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || "";
+const AWS_SECRET_ACCESS_KEY = process.env.MY_AWS_SECRET_ACCESS_KEY || "";
 const COUNTRY_CODE = "+91";
 const RSVP_URL = process.env.RSVP_URL || "http://localhost:3000";
 

@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, NODE_ENV } from "../connection/constants.js";
 
