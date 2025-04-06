@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, NODE_ENV } from "../connection/constants.js";
 
@@ -42,12 +42,13 @@ export const login = async (req: any, res: any) => {
 		const { email, password } = req.body;
 
 		const user = await User.findOne({ email });
+		const bcryptPassword = user?.password || "";
 
-		if (!user) {
+		if (!user || !bcryptPassword) {
 			return res.status(400).send("User not found");
 		}
 
-		const isMatch = await bcrypt.compare(password, user.password);
+		const isMatch = await bcrypt.compare(password, bcryptPassword);
 		if (!isMatch) return res.status(400).send("Invalid credentials");
 
 		const token = jwt.sign({ userID: user._id }, JWT_SECRET, {

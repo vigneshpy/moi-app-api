@@ -6,15 +6,10 @@ const UserSchema = new mongoose.Schema({
 	password: { type: String },
 	email: {
 		type: String,
-		required: function () {
-			return !this.phone_number;
-		}, // Required if no phone_number
 	},
 	phone_number: {
 		type: String,
-		required: function () {
-			return !this.email;
-		}, // Required if no email
+		required: true,
 	},
 	is_verified: { type: Boolean, default: false },
 	created_at: { type: Date, default: Date.now },
