@@ -4,7 +4,11 @@ import { COUNTRY_CODE } from "../connection/constants";
 /**
  * Middleware to validate OTP send request
  */
-export const validateSendOTP = (req, res, next: NextFunction) => {
+export const validateSendOTP = (
+	req: any,
+	res: any,
+	next: NextFunction
+): any => {
 	if (!req.body || Object.keys(req.body).length === 0) {
 		return res.status(400).json({ error: "Request body is missing or empty!" });
 	}
@@ -21,7 +25,11 @@ export const validateSendOTP = (req, res, next: NextFunction) => {
 	next();
 };
 
-export const validateVerifyOTP = (req, res, next: NextFunction) => {
+export const validateVerifyOTP = (
+	req: any,
+	res: any,
+	next: NextFunction
+): any => {
 	if (!req.body || Object.keys(req.body).length === 0) {
 		return res.status(400).json({ error: "Request body is missing or empty!" });
 	}

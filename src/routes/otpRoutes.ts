@@ -37,8 +37,7 @@ router.post("/send", validateSendOTP, async (req: any, res: any) => {
 	}
 });
 
-// Verify OTP route with validation middleware
-router.post("/verify", validateVerifyOTP, async (req, res) => {
+router.post("/verify", validateVerifyOTP, async (req: any, res) => {
 	try {
 		const {
 			phone_number,
@@ -48,7 +47,6 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 			email,
 		} = req.body;
 
-		// Find the latest OTP entry
 		const storedOTP = await OTP.findOne({ phone_number }).sort({
 			createdAt: -1,
 		});
@@ -99,18 +97,18 @@ router.post("/verify", validateVerifyOTP, async (req, res) => {
 			}
 		);
 
-		// Set JWT in HttpOnly Cookie
 		res.cookie("token", token, {
-			httpOnly: true, // Prevent JavaScript access (XSS protection)
-			secure: process.env.NODE_ENV === "production", // Secure in production
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
 			sameSite: "strict",
 			maxAge: 24 * 60 * 60 * 1000,
 		});
-
-		res.status(200).json({
+		const success: any = {
 			message: "OTP verified successfully, user updated!",
 			user,
-		});
+		};
+
+		res.status(200).json(success);
 	} catch (err: any) {
 		console.error("Error:", err);
 		res.status(400).json({ error: err.message });

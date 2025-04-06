@@ -16,7 +16,7 @@ export const s3 = new S3Client({
 	},
 });
 
-export const uploadToS3 = async (buffer) => {
+export const uploadToS3 = async (buffer: any) => {
 	const key = `covers/${uuidv4()}.png`;
 	const uploadParams: any = {
 		Bucket: process.env.AWS_S3_BUCKET,
@@ -29,7 +29,7 @@ export const uploadToS3 = async (buffer) => {
 	return key; // Return only the key, not the full URL
 };
 
-export const generatePreSignURL = async (key: string): Promise<string> => {
+export const generatePreSignURL = async (key: string) => {
 	try {
 		const command = new GetObjectCommand({
 			Bucket: process.env.AWS_S3_BUCKET,

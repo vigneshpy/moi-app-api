@@ -13,18 +13,15 @@ COPY . .
 # Compile TypeScript to JavaScript
 RUN npm run build
 
-# Stage 2: Production Stage (Slimmer Image)
-FROM node:22 AS prod
+# Stage 2: Production Stage (AWS Lambda Compatible)
+FROM public.ecr.aws/lambda/nodejs:18
 
-WORKDIR /src
+WORKDIR /var/task
 
 # Copy only necessary files from build stage
 COPY --from=build /src/dist dist
 COPY --from=build /src/node_modules node_modules
-COPY package.json .
+COPY package.json . 
 
-# Expose the port your app runs on
-EXPOSE 3000
-
-# Start the application
-CMD ["node", "dist/index.js"]
+# Set AWS Lambda entry point
+CMD ["dist/lambda.handler"]

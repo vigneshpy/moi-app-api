@@ -4,15 +4,10 @@ const OTPSchema = new mongoose.Schema(
 	{
 		email: {
 			type: String,
-			required: function () {
-				return !this.phone_number;
-			}, // Required if no phone_number
 		},
 		phone_number: {
 			type: String,
-			required: function () {
-				return !this.email;
-			}, // Required if no email
+			required: true,
 		},
 		otp: { type: String, required: true },
 		verified: { type: Boolean, default: false },

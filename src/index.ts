@@ -6,41 +6,18 @@ import connectDB from "./connection/db";
 import eventRoutes from "./routes/eventRoutes";
 import giftRoutes from "./routes/giftRoutes";
 import userRoutes from "./routes/userRoutes";
-import acountRoutes from "./routes/accountRoutes";
+import accountRoutes from "./routes/accountRoutes"; // Fixed typo
 import authRoutes from "./routes/authRoutes";
 import otpRoutes from "./routes/otpRoutes";
 import rsvpRoutes from "./routes/rsvpRoutes";
 import cors from "cors";
-
 import { verifyToken } from "./middleware/auth.middleware";
+
 dotenv.config();
 const app = express();
-const port = 3000;
 
 connectDB();
-app.use(express());
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // ✅ Parse form-encoded data
-app.get("/", (req, res) => {
-	res.send("MOI APP API");
-});
 
-app.get("/healthz", (req, res) => {
-	res.send("Running successfully");
-});
-
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
-});
-
-app.use("/events", verifyToken, eventRoutes);
-app.use("/gifts", verifyToken, giftRoutes);
-app.use("/users", verifyToken, userRoutes);
-app.use("/accounts", verifyToken, acountRoutes);
-app.use("/auth", authRoutes);
-app.use("/rsvp", rsvpRoutes);
-app.use("/otp", otpRoutes);
 app.use(
 	cors({
 		origin: "*",
@@ -49,3 +26,32 @@ app.use(
 	})
 );
 app.options("*", cors());
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (_, res) => {
+	res.send("MOI APP API");
+});
+
+app.get("/healthz", (req, res) => {
+	res.send("Running successfully");
+});
+
+app.use("/events", verifyToken, eventRoutes);
+app.use("/gifts", verifyToken, giftRoutes);
+app.use("/users", verifyToken, userRoutes);
+app.use("/accounts", verifyToken, accountRoutes);
+app.use("/auth", authRoutes);
+app.use("/rsvp", rsvpRoutes);
+app.use("/otp", otpRoutes);
+
+if (process.env.IS_LAMBDA !== "true") {
+	const port = process.env.PORT || 3000;
+	app.listen(port, () => {
+		console.log(`Server running on port ${port}`);
+	});
+}
+
+export default app;

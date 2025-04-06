@@ -12,7 +12,7 @@ AWS.config.update({
 
 const sns = new AWS.SNS();
 
-export const sendOTP = async (phoneNumber, otp) => {
+export const sendOTP = async (phoneNumber: string, otp: string) => {
 	try {
 		const params = {
 			Message: `Your OTP is: ${otp}`,
