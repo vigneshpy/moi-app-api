@@ -1,17 +1,13 @@
 name: Deploy to AWS Lambda
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Deploy"
-        required: true
-        default: "dev"
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
 
     steps:
       - name: Checkout code
@@ -22,12 +18,15 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (production only)
+        run: npm ci --omit=dev
+
+      - name: Build app (if you have a build step)
+        run: npm run build
 
       - name: Zip Lambda package
         run: |
-          zip -r lambda.zip . -x ".git/*" "node_modules/aws-sdk/*"
+          zip -r lambda.zip dist node_modules package.json
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
